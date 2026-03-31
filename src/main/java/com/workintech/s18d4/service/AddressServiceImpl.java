@@ -20,12 +20,9 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Address find(int id) { // long -> int yapıldı
-        Optional<Address> addressOptional = addressRepository.findById((long) id);
-        if (addressOptional.isPresent()) {
-            return addressOptional.get();
-        }
-        throw new RuntimeException("Address not found with id: " + id);
+    public Address find(int id) {
+        return addressRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Address not found with id: " + id));
     }
 
     @Override

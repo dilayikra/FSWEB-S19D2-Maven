@@ -20,12 +20,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account find(int id) { // long -> int yapıldı
-        Optional<Account> accountOptional = accountRepository.findById((long) id);
-        if (accountOptional.isPresent()) {
-            return accountOptional.get();
-        }
-        throw new RuntimeException("Account not found with id: " + id);
+    public Account find(int id) {
+        return accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found with id: " + id));
     }
 
     @Override

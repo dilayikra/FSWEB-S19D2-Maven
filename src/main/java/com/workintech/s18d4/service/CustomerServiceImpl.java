@@ -20,12 +20,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer find(int id) { // long -> int yapıldı
-        Optional<Customer> customerOptional = customerRepository.findById((long) id);
-        if (customerOptional.isPresent()) {
-            return customerOptional.get();
-        }
-        throw new RuntimeException("Customer not found with id: " + id);
+    public Customer find(int id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
     }
 
     @Override

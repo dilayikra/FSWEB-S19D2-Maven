@@ -1,5 +1,6 @@
 package com.workintech.s18d4.controller;
 
+import com.workintech.s18d4.AddressResponse;
 import com.workintech.s18d4.entity.Address;
 import com.workintech.s18d4.service.AddressService;
 import lombok.AllArgsConstructor;
@@ -10,32 +11,65 @@ import java.util.List;
 @RestController
 @RequestMapping("/workintech/address")
 @AllArgsConstructor
-public class AddressController { // Sınıf adı dosya adıyla aynı yapıldı
+public class AddressController {
 
     private final AddressService addressService;
 
     @GetMapping
-    public List<Address> findAll() {
-        return addressService.findAll();
+    public List<AddressResponse> findAll() {
+        return addressService.findAll().stream()
+                .map(a -> new AddressResponse(
+                        a.getId(),
+                        a.getStreet(),
+                        a.getNo(),
+                        a.getCity(),
+                        a.getCountry(),
+                        a.getDescription()
+                ))
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public Address find(@PathVariable int id) { // int uyumu sağlandı
-        return addressService.find(id);
+    public AddressResponse find(@PathVariable int id) {
+        Address a = addressService.find(id);
+        return new AddressResponse(
+                a.getId(),
+                a.getStreet(),
+                a.getNo(),
+                a.getCity(),
+                a.getCountry(),
+                a.getDescription()
+        );
     }
 
     @PostMapping
-    public Address save(@RequestBody Address address) {
-        return addressService.save(address);
+    public AddressResponse save(@RequestBody Address address) {
+        Address saved = addressService.save(address);
+        return new AddressResponse(
+                saved.getId(),
+                saved.getStreet(),
+                saved.getNo(),
+                saved.getCity(),
+                saved.getCountry(),
+                saved.getDescription()
+        );
     }
 
     @PutMapping("/{id}")
-    public Address update(@PathVariable int id, @RequestBody Address address) { // int uyumu sağlandı
-        return addressService.update(id, address);
+    public AddressResponse update(@PathVariable int id, @RequestBody Address address) {
+        Address updated = addressService.update(id, address);
+        return new AddressResponse(
+                updated.getId(),
+                updated.getStreet(),
+                updated.getNo(),
+                updated.getCity(),
+                updated.getCountry(),
+                updated.getDescription()
+        );
     }
 
     @DeleteMapping("/{id}")
-    public Address delete(@PathVariable int id) { // int uyumu sağlandı
-        return addressService.delete(id);
+    public void delete(@PathVariable int id) {
+        addressService.delete(id);
     }
 }
