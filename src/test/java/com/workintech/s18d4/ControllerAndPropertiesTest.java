@@ -144,4 +144,4 @@ class ControllerAndPropertiesTest {
         assertThat(serverPort).isEqualTo("8080"); // Burası senin properties dosyana göre 8585 de olabilir
         assertNotNull(env.getProperty("spring.datasource.url"));
     }
-}
+ }
