@@ -9,8 +9,8 @@ import com.workintech.s18d4.service.CustomerService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/workintech/accounts")
@@ -22,48 +22,39 @@ public class AccountController {
 
     @GetMapping
     public List<AccountResponse> findAll() {
-        List<Account> accounts = accountService.findAll();
-        List<AccountResponse> responses = new ArrayList<>();
-        for (Account a : accounts) {
-            responses.add(convertToResponse(a));
-        }
-        return responses;
+        return accountService.findAll().stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public AccountResponse find(@PathVariable int id) { // int uyumu sağlandı
-        Account account = accountService.find(id);
-        return convertToResponse(account);
+    public AccountResponse find(@PathVariable int id) {
+        return convertToResponse(accountService.find(id));
     }
 
     @PostMapping("/{customerId}")
-    public AccountResponse save(@PathVariable int customerId, @RequestBody Account account) { // int uyumu sağlandı
+    public AccountResponse save(@PathVariable int customerId, @RequestBody Account account) {
         Customer customer = customerService.find(customerId);
         account.setCustomer(customer);
-        Account savedAccount = accountService.save(account);
-        return convertToResponse(savedAccount);
+        return convertToResponse(accountService.save(account));
     }
 
     @PutMapping("/{customerId}")
-    public AccountResponse update(@PathVariable int customerId, @RequestBody Account account) { // int uyumu sağlandı
+    public AccountResponse update(@PathVariable int customerId, @RequestBody Account account) {
         Customer customer = customerService.find(customerId);
         account.setCustomer(customer);
-        Account updatedAccount = accountService.save(account);
-        return convertToResponse(updatedAccount);
+        return convertToResponse(accountService.save(account));
     }
 
     @DeleteMapping("/{id}")
-    public AccountResponse delete(@PathVariable int id) { // BURASI: long -> int yapıldı
-        Account deleted = accountService.delete(id);
-        return convertToResponse(deleted);
+    public AccountResponse delete(@PathVariable int id) {
+        return convertToResponse(accountService.delete(id));
     }
 
-    // Entity -> Record dönüşümü (Hatalar burada düzeltildi)
     private AccountResponse convertToResponse(Account account) {
         Customer c = account.getCustomer();
         CustomerResponse customerResponse = null;
         if (c != null) {
-            // CustomerResponse artık 6 parametre bekliyor (Address eklendi)
             customerResponse = new CustomerResponse(
                     c.getId(),
                     c.getFirstName(),
